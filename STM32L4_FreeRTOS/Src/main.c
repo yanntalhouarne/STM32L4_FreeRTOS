@@ -80,7 +80,6 @@ void StartDefaultTask(void const * argument);
 
 QueueHandle_t xQueue;
 
-
 void vLedToggle(void *pvParameters)
 {
 	TickType_t xDelay = 1000 / portTICK_PERIOD_MS;
@@ -89,60 +88,55 @@ void vLedToggle(void *pvParameters)
 	{
 		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 		vTaskDelay(xDelay);
-
 	}
 }
 
 void vUartTransmit(void *pvParameters)
 {
 
-//	TickType_t xDelay = 100 / portTICK_PERIOD_MS;
 
-	uint8_t txBuffer[7];
+	uint8_t txBuffer[7]; 
 
 	uint8_t *ptr_txBuffer;
 
 	ptr_txBuffer = txBuffer;
 
-	uint8_t debugMsg[] = "Waiting for message.\n";
+	uint8_t debugMsg[] = "vUartTransmit task initialized.\n";
 
 	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
-
-//	vTaskPrioritySet(NULL, 1);
 
 	while(1)
 	{
 
-		xQueueReceive(xQueue, &ptr_txBuffer, HAL_MAX_DELAY);
+		xQueueReceive(xQueue, &ptr_txBuffer, HAL_MAX_DELAY); // blocks until vUartReceive task adds data to queue
 
-		HAL_UART_Transmit(&huart2, ptr_txBuffer, 7, HAL_MAX_DELAY);
+		HAL_UART_Transmit(&huart2, ptr_txBuffer, 7, HAL_MAX_DELAY); // once data is read from the queue, send it over to UART
 
 	}
 }
 
 void vUartReceive(void *pvParameters)
 {
-
-
 	TickType_t xDelay = 100 / portTICK_PERIOD_MS;
 
 	uint8_t rxBuffer[7]; // array is needed for HAL_UART_Receive()
+
 	uint8_t *ptr_rxBuffer; // pointer to the array for xQueueSend
 
 	ptr_rxBuffer = rxBuffer;
 
-	uint8_t debugMsg[] = "Waiting for input.\n";
+	uint8_t debugMsg[] = "vuartReceive task initialized.\n";
 
 	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 
 	while(1)
 	{
 
-		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
+		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY); // poll on UART RX
 
-		xQueueSend(xQueue, &ptr_rxBuffer, 0);
+		xQueueSend(xQueue, &ptr_rxBuffer, 0); // when 7 characters have been received, send the array to the queue
 
-		vTaskDelay(xDelay);
+		vTaskDelay(xDelay); // block for 100ms
 	}
 }
 
@@ -186,8 +180,7 @@ int main(void)
 
   xQueue = xQueueCreate(4, sizeof(int32_t));
 
-//if (xQueue != NULL)
-//{
+
 
   xTaskCreate(vLedToggle,
 		  	 (const char* const)"LED Toggle",
@@ -200,7 +193,7 @@ int main(void)
   		  	 (const char* const)"UART Transmit",
   			 configMINIMAL_STACK_SIZE,
   			 0,
-  			 1,
+  			 2,
 			 NULL);
 
   xTaskCreate(vUartReceive,
@@ -212,11 +205,6 @@ int main(void)
 
   /* Start FreeRTOS task scheduler. */
  vTaskStartScheduler();
-//}
-//else
-//{
-//
-//}
 
   /* USER CODE END 2 */
 
