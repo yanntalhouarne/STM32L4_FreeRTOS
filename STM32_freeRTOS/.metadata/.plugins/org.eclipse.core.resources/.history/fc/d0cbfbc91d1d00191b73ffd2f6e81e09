@@ -142,7 +142,7 @@ void vUartReceive(void *pvParameters)
 
 		xQueueSend(xQueue, &ptr_rxBuffer, 0);
 
-		vTaskDelay(xDelay);
+		//vTaskDelay(xDelay);
 	}
 }
 

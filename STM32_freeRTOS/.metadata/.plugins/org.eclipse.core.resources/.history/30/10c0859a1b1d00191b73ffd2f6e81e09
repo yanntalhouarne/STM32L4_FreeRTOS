@@ -96,22 +96,23 @@ void vLedToggle(void *pvParameters)
 void vUartTransmit(void *pvParameters)
 {
 
-//	TickType_t xDelay = 100 / portTICK_PERIOD_MS;
+	TickType_t xDelay = 100 / portTICK_PERIOD_MS;
 
 	uint8_t txBuffer[7];
 
 	uint8_t *ptr_txBuffer;
 
+
+
 	ptr_txBuffer = txBuffer;
 
 	uint8_t debugMsg[] = "Waiting for message.\n";
 
-	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
-
-//	vTaskPrioritySet(NULL, 1);
+	vTaskPrioritySet(NULL, 1);
 
 	while(1)
 	{
+		HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 
 		xQueueReceive(xQueue, &ptr_txBuffer, HAL_MAX_DELAY);
 
@@ -123,6 +124,7 @@ void vUartTransmit(void *pvParameters)
 void vUartReceive(void *pvParameters)
 {
 
+	uint8_t available_space = 0;
 
 	TickType_t xDelay = 100 / portTICK_PERIOD_MS;
 
@@ -131,18 +133,18 @@ void vUartReceive(void *pvParameters)
 
 	ptr_rxBuffer = rxBuffer;
 
-	uint8_t debugMsg[] = "Waiting for input.\n";
-
-	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
+	uint8_t debugMsg[] = "  empty spaces.\n";
 
 	while(1)
 	{
 
 		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
-
 		xQueueSend(xQueue, &ptr_rxBuffer, 0);
-
+		available_space = uxQueueSpacesAvailable(xQueue) + 48;
+		debugMsg[0] = available_space;
+		HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 		vTaskDelay(xDelay);
+
 	}
 }
 
@@ -156,7 +158,6 @@ void vUartReceive(void *pvParameters)
   * @retval None
   */
 int main(void)
-
 {
   /* USER CODE BEGIN 1 */
 

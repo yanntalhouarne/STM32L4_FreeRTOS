@@ -108,6 +108,7 @@ void vUartTransmit(void *pvParameters)
 
 	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 
+
 //	vTaskPrioritySet(NULL, 1);
 
 	while(1)
@@ -138,6 +139,7 @@ void vUartReceive(void *pvParameters)
 	while(1)
 	{
 
+
 		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
 
 		xQueueSend(xQueue, &ptr_rxBuffer, 0);
@@ -156,7 +158,6 @@ void vUartReceive(void *pvParameters)
   * @retval None
   */
 int main(void)
-
 {
   /* USER CODE BEGIN 1 */
 

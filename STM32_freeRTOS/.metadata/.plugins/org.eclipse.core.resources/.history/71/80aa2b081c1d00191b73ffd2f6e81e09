@@ -108,7 +108,8 @@ void vUartTransmit(void *pvParameters)
 
 	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 
-//	vTaskPrioritySet(NULL, 1);
+
+	vTaskPrioritySet(NULL, 1);
 
 	while(1)
 	{
@@ -133,10 +134,9 @@ void vUartReceive(void *pvParameters)
 
 	uint8_t debugMsg[] = "Waiting for input.\n";
 
-	HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
-
 	while(1)
 	{
+		HAL_UART_Transmit(&huart2, debugMsg, sizeof(debugMsg), HAL_MAX_DELAY);
 
 		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
 
@@ -156,7 +156,6 @@ void vUartReceive(void *pvParameters)
   * @retval None
   */
 int main(void)
-
 {
   /* USER CODE BEGIN 1 */
 
@@ -200,7 +199,7 @@ int main(void)
   		  	 (const char* const)"UART Transmit",
   			 configMINIMAL_STACK_SIZE,
   			 0,
-  			 1,
+  			 2,
 			 NULL);
 
   xTaskCreate(vUartReceive,

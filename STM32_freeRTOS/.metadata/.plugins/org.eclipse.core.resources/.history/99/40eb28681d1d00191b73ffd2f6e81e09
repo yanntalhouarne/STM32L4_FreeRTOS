@@ -138,11 +138,11 @@ void vUartReceive(void *pvParameters)
 	while(1)
 	{
 
-		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
+		HAL_UART_Receive(&huart2, rxBuffer, 7, xDelay;
 
 		xQueueSend(xQueue, &ptr_rxBuffer, 0);
 
-		vTaskDelay(xDelay);
+	//	vTaskDelay(xDelay);
 	}
 }
 
@@ -156,7 +156,6 @@ void vUartReceive(void *pvParameters)
   * @retval None
   */
 int main(void)
-
 {
   /* USER CODE BEGIN 1 */
 
