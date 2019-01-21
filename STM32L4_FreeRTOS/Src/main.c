@@ -137,7 +137,6 @@ void vUartReceive(void *pvParameters)
 
 	while(1)
 	{
-
 		HAL_UART_Receive(&huart2, rxBuffer, 7, HAL_MAX_DELAY);
 
 		xQueueSend(xQueue, &ptr_rxBuffer, 0);
@@ -200,7 +199,7 @@ int main(void)
   		  	 (const char* const)"UART Transmit",
   			 configMINIMAL_STACK_SIZE,
   			 0,
-  			 1,
+  			 2,
 			 NULL);
 
   xTaskCreate(vUartReceive,
