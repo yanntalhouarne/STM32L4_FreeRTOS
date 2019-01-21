@@ -1,8 +1,0 @@
-main.c:84:6:vLedToggle	8	static
-main.c:96:6:vUartTransmit	56	static
-main.c:124:6:vUartReceive	56	static
-main.c:450:6:StartDefaultTask	8	static
-main.c:273:6:SystemClock_Config	240	static
-main.c:160:5:main	56	static
-main.c:470:6:HAL_TIM_PeriodElapsedCallback	0	static
-main.c:489:6:_Error_Handler	0	static
